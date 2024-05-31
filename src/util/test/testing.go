@@ -8,6 +8,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/moura1001/ramengo-api/src/dto"
 	"github.com/moura1001/ramengo-api/src/handlers"
 )
 
@@ -25,16 +26,23 @@ func AssertStatus(t *testing.T, got, want int) {
 	}
 }
 
-func AssertErrorResponse(t *testing.T, body io.Reader, want any) {
+func AssertErrorResponse(t *testing.T, body io.Reader, want dto.ErrorResponse) {
 	t.Helper()
-	got := make(map[string]string, 0)
+	var got dto.ErrorResponse
 	err := json.NewDecoder(body).Decode(&got)
 
 	if err != nil {
-		t.Fatalf("unable to parse response from server %q into map: '%v'", body, err)
+		t.Fatalf("unable to parse response from server %q into dto.ErrorResponse: '%v'", body, err)
 	}
 
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("got %v want %v", got, want)
+	}
+}
+
+func AssertContentType(t *testing.T, response *http.Response, want string) {
+	t.Helper()
+	if response.Header.Get(handlers.HeaderContentType) != want {
+		t.Errorf("response did not have %s of %s, got %v", handlers.HeaderContentType, want, response.Header)
 	}
 }

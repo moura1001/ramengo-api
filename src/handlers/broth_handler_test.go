@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/moura1001/ramengo-api/src/dto"
+	"github.com/moura1001/ramengo-api/src/handlers"
 	utiltesting "github.com/moura1001/ramengo-api/src/util/test"
 )
 
@@ -17,8 +19,7 @@ func TestBrothEndpoint(t *testing.T) {
 		response, _ := client.Do(request)
 
 		utiltesting.AssertStatus(t, response.StatusCode, http.StatusForbidden)
-		utiltesting.AssertErrorResponse(t, response.Body, map[string]string{
-			"error": "x-api-key header missing",
-		})
+		utiltesting.AssertContentType(t, response, handlers.JsonContentType)
+		utiltesting.AssertErrorResponse(t, response.Body, dto.NewErrorResponse("x-api-key header missing"))
 	})
 }

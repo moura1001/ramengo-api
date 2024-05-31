@@ -16,6 +16,7 @@ import (
 func NewHttpTestServer() *httptest.Server {
 	router := http.NewServeMux()
 	router.HandleFunc("GET /broths", handlers.WithRequiredHeaders(handlers.HandleBrothList))
+	router.HandleFunc("GET /proteins", handlers.WithRequiredHeaders(handlers.HandleProteinList))
 
 	return httptest.NewServer(router)
 }
@@ -55,6 +56,20 @@ func AssertBrothList(t *testing.T, body io.Reader, want []model.Broth) {
 
 	if err != nil {
 		t.Fatalf("unable to parse response from server %q into broth list: '%v'", body, err)
+	}
+
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("got %v want %v", got, want)
+	}
+}
+
+func AssertProteinList(t *testing.T, body io.Reader, want []model.Protein) {
+	t.Helper()
+	var got []model.Protein
+	err := json.NewDecoder(body).Decode(&got)
+
+	if err != nil {
+		t.Fatalf("unable to parse response from server %q into protein list: '%v'", body, err)
 	}
 
 	if !reflect.DeepEqual(got, want) {

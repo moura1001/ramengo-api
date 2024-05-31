@@ -22,4 +22,14 @@ func TestOrderEndpoint(t *testing.T) {
 		utiltesting.AssertContentType(t, response, handlers.JsonContentType)
 		utiltesting.AssertErrorResponse(t, response.Body, dto.NewErrorResponse("x-api-key header missing"))
 	})
+
+	t.Run("should return 400 invalid request when the request does not have the requiered body", func(t *testing.T) {
+		request, _ := http.NewRequest(http.MethodPost, server.URL+"/orders", nil)
+		request.Header.Set("x-api-key", "abc")
+		response, _ := client.Do(request)
+
+		utiltesting.AssertStatus(t, response.StatusCode, http.StatusBadRequest)
+		utiltesting.AssertContentType(t, response, handlers.JsonContentType)
+		utiltesting.AssertErrorResponse(t, response.Body, dto.NewErrorResponse("both brothId and proteinId are required"))
+	})
 }

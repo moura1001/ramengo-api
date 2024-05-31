@@ -12,6 +12,6 @@ const (
 
 func WriteJSON(w http.ResponseWriter, code int, v any) error {
 	w.Header().Set(HeaderContentType, JsonContentType)
-	w.WriteHeader(http.StatusForbidden)
+	w.WriteHeader(code)
 	return json.NewEncoder(w).Encode(v)
 }

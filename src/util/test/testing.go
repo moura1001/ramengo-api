@@ -10,6 +10,7 @@ import (
 
 	"github.com/moura1001/ramengo-api/src/dto"
 	"github.com/moura1001/ramengo-api/src/handlers"
+	"github.com/moura1001/ramengo-api/src/model"
 )
 
 func NewHttpTestServer() *httptest.Server {
@@ -44,5 +45,19 @@ func AssertContentType(t *testing.T, response *http.Response, want string) {
 	t.Helper()
 	if response.Header.Get(handlers.HeaderContentType) != want {
 		t.Errorf("response did not have %s of %s, got %v", handlers.HeaderContentType, want, response.Header)
+	}
+}
+
+func AssertBrothList(t *testing.T, body io.Reader, want []model.Broth) {
+	t.Helper()
+	var got []model.Broth
+	err := json.NewDecoder(body).Decode(&got)
+
+	if err != nil {
+		t.Fatalf("unable to parse response from server %q into broth list: '%v'", body, err)
+	}
+
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("got %v want %v", got, want)
 	}
 }

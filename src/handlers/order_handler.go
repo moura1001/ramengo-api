@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/moura1001/ramengo-api/src/dto"
+	"github.com/moura1001/ramengo-api/src/service"
 )
 
 func HandleOrderNew(w http.ResponseWriter, r *http.Request) {
@@ -15,6 +16,14 @@ func HandleOrderNew(w http.ResponseWriter, r *http.Request) {
 		WriteJSON(w, http.StatusBadRequest, dto.NewErrorResponse("both brothId and proteinId are required"))
 		return
 	}
+
+	orderResponse, code, err := service.GetOrderProcessor().ProcessOrder(orderRequest)
+	if err != nil {
+		WriteJSON(w, code, dto.NewErrorResponse(err.Error()))
+		return
+	}
+
+	WriteJSON(w, code, orderResponse)
 }
 
 func isValidOrderRequest(orderRequest dto.OrderRequest) bool {

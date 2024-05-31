@@ -9,3 +9,9 @@ func NewErrorResponse(message string) ErrorResponse {
 		ErrMsg: message,
 	}
 }
+
+type OrderResponse struct {
+	Id          string `json:"id"`
+	Description string `json:"description"`
+	Image       string `json:"image"`
+}

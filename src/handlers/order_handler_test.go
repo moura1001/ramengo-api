@@ -1,11 +1,14 @@
 package handlers_test
 
 import (
+	"bytes"
+	"encoding/json"
 	"net/http"
 	"testing"
 
 	"github.com/moura1001/ramengo-api/src/dto"
 	"github.com/moura1001/ramengo-api/src/handlers"
+	"github.com/moura1001/ramengo-api/src/service"
 	utiltesting "github.com/moura1001/ramengo-api/src/util/test"
 )
 
@@ -31,5 +34,23 @@ func TestOrderEndpoint(t *testing.T) {
 		utiltesting.AssertStatus(t, response.StatusCode, http.StatusBadRequest)
 		utiltesting.AssertContentType(t, response, handlers.JsonContentType)
 		utiltesting.AssertErrorResponse(t, response.Body, dto.NewErrorResponse("both brothId and proteinId are required"))
+	})
+
+	t.Run("should return 500 internal server error when the external order microservice is down", func(t *testing.T) {
+		service.SetOrderProcessor(utiltesting.GetOrderProcessorMock(http.StatusInternalServerError))
+
+		body := dto.OrderRequest{
+			BrothId:   "1",
+			ProteinId: "1",
+		}
+		payloadBuf := new(bytes.Buffer)
+		json.NewEncoder(payloadBuf).Encode(body)
+		request, _ := http.NewRequest(http.MethodPost, server.URL+"/orders", payloadBuf)
+		request.Header.Set("x-api-key", "abc")
+		response, _ := client.Do(request)
+
+		utiltesting.AssertStatus(t, response.StatusCode, http.StatusInternalServerError)
+		utiltesting.AssertContentType(t, response, handlers.JsonContentType)
+		utiltesting.AssertErrorResponse(t, response.Body, dto.NewErrorResponse("could not place order"))
 	})
 }

@@ -53,4 +53,22 @@ func TestOrderEndpoint(t *testing.T) {
 		utiltesting.AssertContentType(t, response, handlers.JsonContentType)
 		utiltesting.AssertErrorResponse(t, response.Body, dto.NewErrorResponse("could not place order"))
 	})
+
+	t.Run("should return 201 when order placed successfully", func(t *testing.T) {
+		service.SetOrderProcessor(utiltesting.GetOrderProcessorMock(http.StatusCreated))
+
+		body := dto.OrderRequest{
+			BrothId:   "1",
+			ProteinId: "1",
+		}
+		payloadBuf := new(bytes.Buffer)
+		json.NewEncoder(payloadBuf).Encode(body)
+		request, _ := http.NewRequest(http.MethodPost, server.URL+"/orders", payloadBuf)
+		request.Header.Set("x-api-key", "abc")
+		response, _ := client.Do(request)
+
+		utiltesting.AssertStatus(t, response.StatusCode, http.StatusCreated)
+		utiltesting.AssertContentType(t, response, handlers.JsonContentType)
+		utiltesting.AssertOrderResponse(t, response.Body, utiltesting.OrderResponseSuccessfully)
+	})
 }

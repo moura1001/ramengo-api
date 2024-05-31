@@ -13,6 +13,12 @@ import (
 	"github.com/moura1001/ramengo-api/src/model"
 )
 
+var OrderResponseSuccessfully = dto.OrderResponse{
+	Id:          "12345",
+	Description: "Salt and Chasu Ramen",
+	Image:       "https://tech.redventures.com.br/icons/ramen/ramenChasu.png",
+}
+
 func NewHttpTestServer() *httptest.Server {
 	router := http.NewServeMux()
 	router.HandleFunc("GET /broths", handlers.WithRequiredHeaders(handlers.HandleBrothList))
@@ -71,6 +77,20 @@ func AssertProteinList(t *testing.T, body io.Reader, want []model.Protein) {
 
 	if err != nil {
 		t.Fatalf("unable to parse response from server %q into protein list: '%v'", body, err)
+	}
+
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("got %v want %v", got, want)
+	}
+}
+
+func AssertOrderResponse(t *testing.T, body io.Reader, want dto.OrderResponse) {
+	t.Helper()
+	var got dto.OrderResponse
+	err := json.NewDecoder(body).Decode(&got)
+
+	if err != nil {
+		t.Fatalf("unable to parse response from server %q into dto.OrderResponse: '%v'", body, err)
 	}
 
 	if !reflect.DeepEqual(got, want) {

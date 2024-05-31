@@ -17,6 +17,7 @@ func NewHttpTestServer() *httptest.Server {
 	router := http.NewServeMux()
 	router.HandleFunc("GET /broths", handlers.WithRequiredHeaders(handlers.HandleBrothList))
 	router.HandleFunc("GET /proteins", handlers.WithRequiredHeaders(handlers.HandleProteinList))
+	router.HandleFunc("POST /orders", handlers.WithRequiredHeaders(handlers.HandleOrderNew))
 
 	return httptest.NewServer(router)
 }

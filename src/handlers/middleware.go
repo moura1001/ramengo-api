@@ -14,6 +14,8 @@ func WithRequiredHeaders(handler http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
+		w.Header().Set(utilapp.HeaderAccessControlAllowOrigin, utilapp.AllowedHttpOrigin)
+
 		handler.ServeHTTP(w, r)
 	}
 }

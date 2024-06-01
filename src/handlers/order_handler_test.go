@@ -7,8 +7,8 @@ import (
 	"testing"
 
 	"github.com/moura1001/ramengo-api/src/dto"
-	"github.com/moura1001/ramengo-api/src/handlers"
 	"github.com/moura1001/ramengo-api/src/service"
+	utilapp "github.com/moura1001/ramengo-api/src/util/app"
 	utiltesting "github.com/moura1001/ramengo-api/src/util/test"
 )
 
@@ -22,17 +22,17 @@ func TestOrderEndpoint(t *testing.T) {
 		response, _ := client.Do(request)
 
 		utiltesting.AssertStatus(t, response.StatusCode, http.StatusForbidden)
-		utiltesting.AssertContentType(t, response, handlers.JsonContentType)
+		utiltesting.AssertContentType(t, response, utilapp.JsonContentType)
 		utiltesting.AssertErrorResponse(t, response.Body, dto.NewErrorResponse("x-api-key header missing"))
 	})
 
 	t.Run("should return 400 invalid request when the request does not have the requiered body", func(t *testing.T) {
 		request, _ := http.NewRequest(http.MethodPost, server.URL+"/orders", nil)
-		request.Header.Set("x-api-key", "abc")
+		request.Header.Set(utilapp.HeaderXApiKey, "abc")
 		response, _ := client.Do(request)
 
 		utiltesting.AssertStatus(t, response.StatusCode, http.StatusBadRequest)
-		utiltesting.AssertContentType(t, response, handlers.JsonContentType)
+		utiltesting.AssertContentType(t, response, utilapp.JsonContentType)
 		utiltesting.AssertErrorResponse(t, response.Body, dto.NewErrorResponse("both brothId and proteinId are required"))
 	})
 
@@ -46,11 +46,11 @@ func TestOrderEndpoint(t *testing.T) {
 		payloadBuf := new(bytes.Buffer)
 		json.NewEncoder(payloadBuf).Encode(body)
 		request, _ := http.NewRequest(http.MethodPost, server.URL+"/orders", payloadBuf)
-		request.Header.Set("x-api-key", "abc")
+		request.Header.Set(utilapp.HeaderXApiKey, "abc")
 		response, _ := client.Do(request)
 
 		utiltesting.AssertStatus(t, response.StatusCode, http.StatusInternalServerError)
-		utiltesting.AssertContentType(t, response, handlers.JsonContentType)
+		utiltesting.AssertContentType(t, response, utilapp.JsonContentType)
 		utiltesting.AssertErrorResponse(t, response.Body, dto.NewErrorResponse("could not place order"))
 	})
 
@@ -64,11 +64,11 @@ func TestOrderEndpoint(t *testing.T) {
 		payloadBuf := new(bytes.Buffer)
 		json.NewEncoder(payloadBuf).Encode(body)
 		request, _ := http.NewRequest(http.MethodPost, server.URL+"/orders", payloadBuf)
-		request.Header.Set("x-api-key", "abc")
+		request.Header.Set(utilapp.HeaderXApiKey, "abc")
 		response, _ := client.Do(request)
 
 		utiltesting.AssertStatus(t, response.StatusCode, http.StatusCreated)
-		utiltesting.AssertContentType(t, response, handlers.JsonContentType)
+		utiltesting.AssertContentType(t, response, utilapp.JsonContentType)
 		utiltesting.AssertOrderResponse(t, response.Body, utiltesting.OrderResponseSuccessfully)
 	})
 }

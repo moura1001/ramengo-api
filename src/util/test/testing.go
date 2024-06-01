@@ -11,6 +11,7 @@ import (
 	"github.com/moura1001/ramengo-api/src/dto"
 	"github.com/moura1001/ramengo-api/src/handlers"
 	"github.com/moura1001/ramengo-api/src/model"
+	utilapp "github.com/moura1001/ramengo-api/src/util/app"
 )
 
 var OrderResponseSuccessfully = dto.OrderResponse{
@@ -51,8 +52,8 @@ func AssertErrorResponse(t *testing.T, body io.Reader, want dto.ErrorResponse) {
 
 func AssertContentType(t *testing.T, response *http.Response, want string) {
 	t.Helper()
-	if response.Header.Get(handlers.HeaderContentType) != want {
-		t.Errorf("response did not have %s of %s, got %v", handlers.HeaderContentType, want, response.Header)
+	if response.Header.Get(utilapp.HeaderContentType) != want {
+		t.Errorf("response did not have %s of %s, got %v", utilapp.HeaderContentType, want, response.Header)
 	}
 }
 

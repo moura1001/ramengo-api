@@ -3,15 +3,12 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
-)
 
-const (
-	HeaderContentType = "Content-Type"
-	JsonContentType   = "application/json"
+	utilapp "github.com/moura1001/ramengo-api/src/util/app"
 )
 
 func WriteJSON(w http.ResponseWriter, code int, v any) error {
-	w.Header().Set(HeaderContentType, JsonContentType)
+	w.Header().Set(utilapp.HeaderContentType, utilapp.JsonContentType)
 	w.WriteHeader(code)
 	return json.NewEncoder(w).Encode(v)
 }

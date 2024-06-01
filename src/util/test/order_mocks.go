@@ -1,6 +1,7 @@
 package utiltesting
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -8,11 +9,11 @@ import (
 	"github.com/moura1001/ramengo-api/src/service"
 )
 
-func OrderProcessorInternalServerErrorMock(orderRequest dto.OrderRequest) (dto.OrderResponse, int, error) {
+func OrderProcessorInternalServerErrorMock(ctx context.Context, orderRequest dto.OrderRequest) (dto.OrderResponse, int, error) {
 	return dto.OrderResponse{}, http.StatusInternalServerError, fmt.Errorf("could not place order")
 }
 
-func OrderProcessorCreated(orderRequest dto.OrderRequest) (dto.OrderResponse, int, error) {
+func OrderProcessorCreated(ctx context.Context, orderRequest dto.OrderRequest) (dto.OrderResponse, int, error) {
 	return OrderResponseSuccessfully, http.StatusCreated, nil
 }
 

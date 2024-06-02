@@ -23,6 +23,7 @@ var OrderResponseSuccessfully = dto.OrderResponse{
 func NewHttpTestServer() *httptest.Server {
 	router := http.NewServeMux()
 	router.HandleFunc("GET /broths", handlers.WithRequiredHeaders(handlers.HandleBrothList))
+	router.HandleFunc("OPTIONS /broths", handlers.HandleBrothOptions)
 	router.HandleFunc("GET /proteins", handlers.WithRequiredHeaders(handlers.HandleProteinList))
 	router.HandleFunc("POST /orders", handlers.WithRequiredHeaders(handlers.HandleOrderNew))
 
@@ -96,5 +97,12 @@ func AssertOrderResponse(t *testing.T, body io.Reader, want dto.OrderResponse) {
 
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("got %v want %v", got, want)
+	}
+}
+
+func AssertHeader(t *testing.T, response *http.Response, wantHeader string, wantValue string) {
+	t.Helper()
+	if response.Header.Get(wantHeader) != wantValue {
+		t.Errorf("response did not have %s of %s, got %v", wantHeader, wantValue, response.Header)
 	}
 }

@@ -16,8 +16,11 @@ import (
 func main() {
 	router := http.NewServeMux()
 	router.HandleFunc("GET /broths", handlers.WithRequiredHeaders(handlers.HandleBrothList))
+	router.HandleFunc("OPTIONS /broths", handlers.HandleBrothOptions)
 	router.HandleFunc("GET /proteins", handlers.WithRequiredHeaders(handlers.HandleProteinList))
+	router.HandleFunc("OPTIONS /proteins", handlers.HandleProteinOptions)
 	router.HandleFunc("POST /orders", handlers.WithRequiredHeaders(handlers.HandleOrderNew))
+	router.HandleFunc("OPTIONS /orders", handlers.HandleOrderOptions)
 	router.HandleFunc("GET /healthcheck", func(w http.ResponseWriter, r *http.Request) {
 		handlers.WriteJSON(w, http.StatusOK, map[string]string{
 			"status":  "ok",

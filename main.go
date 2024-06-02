@@ -21,6 +21,8 @@ func main() {
 	router.HandleFunc("OPTIONS /proteins", handlers.HandleProteinOptions)
 	router.HandleFunc("POST /orders", handlers.WithRequiredHeaders(handlers.HandleOrderNew))
 	router.HandleFunc("OPTIONS /orders", handlers.HandleOrderOptions)
+	router.HandleFunc("POST /order", handlers.WithRequiredHeaders(handlers.HandleOrderNew))
+	router.HandleFunc("OPTIONS /order", handlers.HandleOrderOptions)
 	router.HandleFunc("GET /healthcheck", func(w http.ResponseWriter, r *http.Request) {
 		handlers.WriteJSON(w, http.StatusOK, map[string]string{
 			"status":  "ok",

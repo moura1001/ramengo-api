@@ -27,6 +27,7 @@ func NewHttpTestServer() *httptest.Server {
 	router.HandleFunc("GET /proteins", handlers.WithRequiredHeaders(handlers.HandleProteinList))
 	router.HandleFunc("OPTIONS /proteins", handlers.HandleProteinOptions)
 	router.HandleFunc("POST /orders", handlers.WithRequiredHeaders(handlers.HandleOrderNew))
+	router.HandleFunc("OPTIONS /orders", handlers.HandleOrderOptions)
 
 	return httptest.NewServer(router)
 }

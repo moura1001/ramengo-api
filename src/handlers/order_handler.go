@@ -36,3 +36,11 @@ func isValidOrderRequest(orderRequest dto.OrderRequest) bool {
 
 	return isValidBrothId && isValidProteinId
 }
+
+func HandleOrderOptions(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set(utilapp.HeaderAccessControlAllowOrigin, utilapp.AllowedHttpOrigin)
+	w.Header().Set(utilapp.HeaderAccessControlAllowMethods, "POST, OPTIONS")
+	w.Header().Set(utilapp.HeaderAccessControlAllowHeaders, utilapp.AllowedHeaders)
+	w.Header().Set(utilapp.HeaderAccessControlMaxAge, "86400")
+	w.WriteHeader(http.StatusNoContent)
+}

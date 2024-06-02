@@ -33,4 +33,15 @@ func TestProteinEndpoint(t *testing.T) {
 		utiltesting.AssertContentType(t, response, utilapp.JsonContentType)
 		utiltesting.AssertProteinList(t, response.Body, model.ListAllProteins())
 	})
+
+	t.Run("should return 204 determining that the request is safe to send", func(t *testing.T) {
+		request, _ := http.NewRequest(http.MethodOptions, server.URL+"/proteins", nil)
+		response, _ := client.Do(request)
+
+		utiltesting.AssertStatus(t, response.StatusCode, http.StatusNoContent)
+		utiltesting.AssertHeader(t, response, utilapp.HeaderAccessControlAllowOrigin, utilapp.AllowedHttpOrigin)
+		utiltesting.AssertHeader(t, response, utilapp.HeaderAccessControlAllowMethods, "GET, OPTIONS")
+		utiltesting.AssertHeader(t, response, utilapp.HeaderAccessControlAllowHeaders, utilapp.AllowedHeaders)
+		utiltesting.AssertHeader(t, response, utilapp.HeaderAccessControlMaxAge, "86400")
+	})
 }
